@@ -20,3 +20,4 @@ sorted         = { path = "sorted" }
 [features]
 run-builder = []
 run-seq     = []
+run-sorted  = []
