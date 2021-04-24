@@ -1,9 +1,9 @@
 [package]
-name = "bitfield"
-version = "0.0.0"
-edition = "2018"
 autotests = false
-publish = false
+edition   = "2018"
+name      = "bitfield"
+publish   = false
+version   = "0.0.0"
 
 [[test]]
 name = "tests"

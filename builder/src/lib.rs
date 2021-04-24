@@ -1,8 +1,9 @@
+// --- proc-macro ---
 use proc_macro::TokenStream;
-use quote::quote;
+// --- crates ---
 use syn::{
-	parse_macro_input, spanned::Spanned, Data, DataStruct, DeriveInput, Error, Fields, FieldsNamed,
-	GenericArgument, Ident, Lit, Meta, NestedMeta, PathArguments, Type,
+	spanned::Spanned, Data, DataStruct, DeriveInput, Error, Fields, FieldsNamed, GenericArgument,
+	Ident, Lit, Meta, NestedMeta, PathArguments, Type,
 };
 
 #[proc_macro_derive(Builder, attributes(builder))]
@@ -30,7 +31,7 @@ pub fn derive(input: TokenStream) -> TokenStream {
 		None
 	}
 
-	let ast = parse_macro_input!(input as DeriveInput);
+	let ast = syn::parse_macro_input!(input as DeriveInput);
 
 	// dbg!(&ast);
 
@@ -53,11 +54,11 @@ pub fn derive(input: TokenStream) -> TokenStream {
 			let t = t.to_string();
 
 			if &t == "Option" || &t == "Vec" {
-				return quote! { #field_name: #field_type };
+				return quote::quote! { #field_name: #field_type };
 			}
 		}
 
-		quote! { #field_name: ::core::option::Option<#field_type> }
+		quote::quote! { #field_name: ::core::option::Option<#field_type> }
 	});
 	let builder_build_fields = fields.iter().map(|f| {
 		let field_name = &f.ident;
@@ -66,13 +67,13 @@ pub fn derive(input: TokenStream) -> TokenStream {
 			let t = t.to_string();
 
 			if &t == "Option" || &t == "Vec" {
-				return quote! {
+				return quote::quote! {
 					#field_name: self.#field_name.clone()
 				};
 			}
 		}
 
-		quote! {
+		quote::quote! {
 			#field_name: self
 				.#field_name
 				.clone()
@@ -114,7 +115,7 @@ pub fn derive(input: TokenStream) -> TokenStream {
 												extract_ident_from_type(inner_type(&f.ty).unwrap())
 													.unwrap();
 
-											return Some(quote! {
+											return Some(quote::quote! {
 												pub fn #each_name(&mut self, #each_name: #inner_type) -> &mut Self {
 													self.#field_name.push(#each_name);
 
@@ -162,7 +163,7 @@ pub fn derive(input: TokenStream) -> TokenStream {
 				let t = t.to_string();
 
 				if &t == "Vec" {
-					return Some(quote! {
+					return Some(quote::quote! {
 						pub fn #field_name(&mut self, #field_name: #field_type) -> &mut Self {
 							self.#field_name = #field_name;
 
@@ -172,7 +173,7 @@ pub fn derive(input: TokenStream) -> TokenStream {
 				} else if &t == "Option" {
 					let inner_type = extract_ident_from_type(inner_type(&f.ty).unwrap()).unwrap();
 
-					return Some(quote! {
+					return Some(quote::quote! {
 						pub fn #field_name(&mut self, #field_name: #inner_type) -> &mut Self {
 							self.#field_name = ::core::option::Option::Some(#field_name);
 
@@ -182,7 +183,7 @@ pub fn derive(input: TokenStream) -> TokenStream {
 				}
 			}
 
-			Some(quote! {
+			Some(quote::quote! {
 				pub fn #field_name(&mut self, #field_name: #field_type) -> &mut Self {
 					self.#field_name = ::core::option::Option::Some(#field_name);
 
@@ -192,7 +193,7 @@ pub fn derive(input: TokenStream) -> TokenStream {
 		})
 		.collect::<Vec<_>>();
 
-	(quote! {
+	(quote::quote! {
 		impl #name {
 			pub fn builder() -> #builder_name {
 				#builder_name::default()

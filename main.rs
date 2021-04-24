@@ -65,5 +65,5 @@ mod runner {
 }
 
 fn main() {
-	// runner::run();
+	runner::run();
 }

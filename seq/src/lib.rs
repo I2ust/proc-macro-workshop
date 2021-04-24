@@ -1,12 +1,13 @@
 #![allow(unused)]
 
+// --- std ---
 use std::ops::Range;
-
+// --- proc-macro ---
 use proc_macro::TokenStream;
+// --- crates ---
 use proc_macro2::{Group, Literal, TokenStream as TokenStream2, TokenTree};
 use quote::ToTokens;
 use syn::{
-	braced,
 	parse::{Parse, ParseStream},
 	parse_macro_input, ExprBlock, Ident, LitInt, Token,
 };
@@ -71,7 +72,7 @@ impl Parse for Seq {
 		};
 		let token_stream = {
 			let c;
-			braced!(c in input);
+			syn::braced!(c in input);
 
 			TokenStream2::parse(&c)?
 		};

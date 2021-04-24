@@ -1,4 +1,4 @@
-// --- proc_macro ---
+// --- proc-macro ---
 use proc_macro::TokenStream;
 // --- crates ---
 use proc_macro2::Span;
